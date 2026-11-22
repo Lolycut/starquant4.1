@@ -2,8 +2,8 @@ name: PlatinumQuant-4.1 Hourly Paper-Trader
 
 on:
   schedule:
-    - cron: "2 * * * *"   # Runs every hour at XX:02 UTC (closed 1h bars)
-  workflow_dispatch:       # Allows manual one-click run in GitHub UI
+    - cron: "2 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,6 +14,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Download 5-seed weights from GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release download v1.0 -p "pq41_ensemble_5seeds_fp16.pt"
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
