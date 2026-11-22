@@ -18,7 +18,7 @@ jobs:
       - name: Download 5-seed weights from GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release download v1.0 -p "pq41_ensemble_5seeds_fp16.pt"
+        run: gh release download -p "pq41_ensemble_5seeds_fp16.pt"
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
