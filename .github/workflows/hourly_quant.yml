@@ -1,0 +1,41 @@
+name: PlatinumQuant-4.1 Hourly Paper-Trader
+
+on:
+  schedule:
+    - cron: "2 * * * *"   # Runs every hour at XX:02 UTC (closed 1h bars)
+  workflow_dispatch:       # Allows manual one-click run in GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  paper-trade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install lightweight CPU-only PyTorch & dependencies
+        run: |
+          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Run PlatinumQuant-4.1 5-Seed Ensemble
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python live_shadow_trader.py
+
+      - name: Commit updated paper-trading journal
+        run: |
+          git config user.name "PlatinumQuant-Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "Hourly paper-trade update [skip ci]"
+          git push
