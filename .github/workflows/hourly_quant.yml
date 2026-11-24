@@ -1,8 +1,6 @@
 name: PlatinumQuant-4.1 Hourly Paper-Trader
 
 on:
-  schedule:
-    - cron: "11 * * * *"
   workflow_dispatch:
 
 permissions:
