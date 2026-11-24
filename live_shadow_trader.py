@@ -188,8 +188,8 @@ def main():
 
         # H5 Uncertainty-Adjusted Conviction Gate (slightly looser entry 0.22 for Crypto)
         conv = 0.55 * float(d_mean[2] - d_mean[0]) + 0.45 * math.tanh(q50 / (0.5 * ci_w))
-        ent_thr = 0.22 if TICKER_CLASS[tk] == "Crypto" else 0.26
-        ext_thr = 0.06
+        ent_thr = 0.16 if TICKER_CLASS[tk] == "Crypto" else 0.18
+        ext_thr = 0.04
 
         new_pos = prev_pos
         if bar_ts != prev_ts:
