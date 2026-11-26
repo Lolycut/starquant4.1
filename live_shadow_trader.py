@@ -81,7 +81,8 @@ def parse_utc_ts(ts_val) -> pd.Timestamp | None:
 
 
 def get_exchange_tz(asset_class: str) -> str:
-    return "UTC" if asset_class == "Crypto" else "America/New_York"
+    # Kaggle training used UTC timestamps from yfinance for all assets (including US equities)
+    return "UTC"
 
 
 def drop_unclosed_bars(
