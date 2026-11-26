@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: pq41-paper-trade
+  cancel-in-progress: false
+
 jobs:
   paper-trade:
     runs-on: ubuntu-latest
@@ -13,10 +17,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Restore & save OHLCV closed-bar cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/ohlcv
+          key: ohlcv-cache-${{ github.run_id }}
+          restore-keys: |
+            ohlcv-cache-
+
       - name: Download 5-seed weights from GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release download -p "pq41_ensemble_5seeds_fp16.pt"
+        run: gh release download -p "pq41_ensemble_5seeds_fp16.pt" --clobber
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -33,6 +45,10 @@ jobs:
         env:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          PQ41_CACHE_DIR: .cache/ohlcv
+          PQ41_GATE_MODE: zscore
+          PQ41_Z_ENTRY: "1.50"
+          PQ41_Z_EXIT: "0.40"
         run: python live_shadow_trader.py
 
       - name: Commit updated paper-trading journal
@@ -40,5 +56,8 @@ jobs:
           git config user.name "PlatinumQuant-Bot"
           git config user.email "bot@users.noreply.github.com"
           git add data/
-          git diff --staged --quiet || git commit -m "Hourly paper-trade update [skip ci]"
-          git push
+          if ! git diff --staged --quiet; then
+            git commit -m "Hourly paper-trade update [skip ci]"
+            git pull --rebase --autostash
+            git push
+          fi
