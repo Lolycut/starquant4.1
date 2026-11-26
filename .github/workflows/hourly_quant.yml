@@ -47,8 +47,10 @@ jobs:
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           PQ41_CACHE_DIR: .cache/ohlcv
           PQ41_GATE_MODE: zscore
-          PQ41_Z_ENTRY: "1.50"
-          PQ41_Z_EXIT: "0.40"
+          PQ41_Z_WIN: "72"
+          PQ41_Z_ENTRY: "1.35"
+          PQ41_Z_EXIT: "0.35"
+          
         run: python live_shadow_trader.py
 
       - name: Commit updated paper-trading journal
