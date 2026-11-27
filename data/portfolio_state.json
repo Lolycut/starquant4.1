@@ -73,8 +73,8 @@
     "XRP-USD": "2026-11-26 22:00:00+00:00",
     "ADA-USD": "2026-11-26 22:00:00+00:00"
   },
-  "n_runs": 62,
-  "daily_date": "2026-11-26",
+  "n_runs": 63,
+  "daily_date": "2026-11-27",
   "daily_start_equity": 1.0,
   "dd_halted": false
 }
